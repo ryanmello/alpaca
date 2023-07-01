@@ -2,8 +2,8 @@
 
 import Button from "@/app/components/Button";
 import Input from "@/app/components/Input";
-import React, { useState } from "react";
-import { Field, FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import React, { useEffect, useState } from "react";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { BsGithub, BsGoogle } from "react-icons/bs";
 import AuthSocialButton from "./AuthSocialButton";
 import { signIn, useSession } from "next-auth/react";
@@ -32,6 +32,12 @@ const AuthForm = () => {
     },
   });
 
+  useEffect(() => {
+    if(session?.status == "authenticated"){
+      router.push("/profile")
+    }
+  }, [session?.status, router])
+
   const toggleVariant = () => {
     if (variant == "LOGIN") {
       setVariant("REGISTER");
@@ -43,28 +49,33 @@ const AuthForm = () => {
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
 
-    if(variant == "REGISTER"){
-      axios.post("/api/register", data)
-      .catch(() => toast.error("Something went wrong"))
-      .finally(() => setIsLoading(false))
+    if (variant == "REGISTER") {
+      axios
+        .post("/api/register", data)
+        .then(() => {
+          signIn("credentials", data);
+          router.push("/profile");
+        })
+        .catch(() => toast.error("Something went wrong"))
+        .finally(() => setIsLoading(false));
     }
 
-    if(variant == "LOGIN"){
+    if (variant == "LOGIN") {
       signIn("credentials", {
         ...data,
-        redirect: false
+        redirect: false,
       })
-      .then((callback) => {
-        if(callback?.error){
-          toast.error("Something went wrong")
-        }
+        .then((callback) => {
+          if (callback?.error) {
+            toast.error("Something went wrong");
+          }
 
-        if(callback?.ok && !callback?.error){
-          toast.success('Success')
-        }
-      })
-      .finally(() => setIsLoading(false))
-      
+          if (callback?.ok && !callback?.error) {
+            toast.success("Success");
+            router.push("/profile");
+          }
+        })
+        .finally(() => setIsLoading(false));
     }
   };
 
@@ -80,7 +91,7 @@ const AuthForm = () => {
 
         if (callback?.ok && !callback?.error) {
           toast.success("Success");
-          router.push("/users");
+          router.push("/profile");
         }
       })
       .finally(() => setIsLoading(false));
