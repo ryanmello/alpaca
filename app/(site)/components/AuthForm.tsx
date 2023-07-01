@@ -9,6 +9,7 @@ import AuthSocialButton from "./AuthSocialButton";
 import { signIn, useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 type Variant = "LOGIN" | "REGISTER";
 
@@ -42,7 +43,29 @@ const AuthForm = () => {
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
 
-    console.log(data);
+    if(variant == "REGISTER"){
+      axios.post("/api/register", data)
+      .catch(() => toast.error("Something went wrong"))
+      .finally(() => setIsLoading(false))
+    }
+
+    if(variant == "LOGIN"){
+      signIn("credentials", {
+        ...data,
+        redirect: false
+      })
+      .then((callback) => {
+        if(callback?.error){
+          toast.error("Something went wrong")
+        }
+
+        if(callback?.ok && !callback?.error){
+          toast.success('Success')
+        }
+      })
+      .finally(() => setIsLoading(false))
+      
+    }
   };
 
   const socialAction = (action: string) => {
