@@ -6,10 +6,16 @@ import React, { useState } from "react";
 import { Field, FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { BsGithub, BsGoogle } from "react-icons/bs";
 import AuthSocialButton from "./AuthSocialButton";
+import { signIn, useSession } from "next-auth/react";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 type Variant = "LOGIN" | "REGISTER";
 
 const AuthForm = () => {
+  const session = useSession();
+  const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(false);
   const [variant, setVariant] = useState<Variant>("LOGIN");
 
@@ -26,17 +32,35 @@ const AuthForm = () => {
   });
 
   const toggleVariant = () => {
-    if(variant == "LOGIN"){
-        setVariant("REGISTER");
+    if (variant == "LOGIN") {
+      setVariant("REGISTER");
     } else {
-        setVariant("LOGIN");
+      setVariant("LOGIN");
     }
-  }
+  };
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
 
     console.log(data);
+  };
+
+  const socialAction = (action: string) => {
+    setIsLoading(true);
+
+    // NextAuth social sign in
+    signIn(action, { redirect: false })
+      .then((callback) => {
+        if (callback?.error) {
+          toast.error("Invalid credentials");
+        }
+
+        if (callback?.ok && !callback?.error) {
+          toast.success("Success");
+          router.push("/users");
+        }
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
@@ -90,23 +114,31 @@ const AuthForm = () => {
               <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="bg-white px-2 text-gray-500">
-                or
-              </span>
+              <span className="bg-white px-2 text-gray-500">or</span>
             </div>
           </div>
           <div className="mt-6 space-y-4">
-            <AuthSocialButton icon={BsGithub} label="GitHub" onClick={() => {}} />
-            <AuthSocialButton icon={BsGoogle} label="Google" onClick={() => {}} />
+            <AuthSocialButton
+              icon={BsGithub}
+              label="GitHub"
+              onClick={() => socialAction("github")}
+            />
+            <AuthSocialButton
+              icon={BsGoogle}
+              label="Google"
+              onClick={() => socialAction("google")}
+            />
           </div>
         </div>
         <div className="flex gap-2 justify-center text-sm text-gray-500 mt-6">
-            <div>
-                {variant == "LOGIN" ? "New to Devboard?" : "Already have an account?"}
-            </div>
-            <div onClick={toggleVariant} className="underline cursor-pointer">
-                {variant == "LOGIN" ? "Create an account" : "Login"}
-            </div>
+          <div>
+            {variant == "LOGIN"
+              ? "New to Devboard?"
+              : "Already have an account?"}
+          </div>
+          <div onClick={toggleVariant} className="underline cursor-pointer">
+            {variant == "LOGIN" ? "Create an account" : "Login"}
+          </div>
         </div>
       </div>
     </div>
