@@ -168,7 +168,7 @@ const AuthForm = () => {
         <div className="flex gap-2 justify-center text-sm text-gray-500 mt-6">
           <div>
             {variant == "LOGIN"
-              ? "New to Devboard?"
+              ? "New to Touchbase?"
               : "Already have an account?"}
           </div>
           <div onClick={toggleVariant} className="underline cursor-pointer">
