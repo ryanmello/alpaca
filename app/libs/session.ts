@@ -37,7 +37,7 @@ export const authOptions: NextAuthOptions = {
         });
 
         // if the user does not exist or the user does not have a hashed password
-        // the only instance of no hashedpassword is if user user a social login
+        // the only instance of no hashedpassword is if user used a social login
         if (!user || !user?.hashedPassword) {
           throw new Error("Invalid credentials");
         }
@@ -60,5 +60,5 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
-  secret: process.env.NEXT_PUBLIC_SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
 };

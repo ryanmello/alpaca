@@ -33,10 +33,10 @@ const AuthForm = () => {
   });
 
   useEffect(() => {
-    if(session?.status == "authenticated"){
-      router.push("/profile")
+    if (session?.status == "authenticated") {
+      router.push("/profile");
     }
-  }, [session?.status, router])
+  }, [session?.status, router]);
 
   const toggleVariant = () => {
     if (variant == "LOGIN") {
@@ -54,6 +54,7 @@ const AuthForm = () => {
         .post("/api/register", data)
         .then(() => {
           signIn("credentials", data);
+          toast.success("Success");
           router.push("/profile");
         })
         .catch(() => toast.error("Something went wrong"))
