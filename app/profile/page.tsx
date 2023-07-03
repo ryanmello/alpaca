@@ -2,7 +2,7 @@ import { signOut } from "next-auth/react";
 import Button from "../components/Button";
 import LogoutButton from "./components/LogoutButton";
 import getCurrentUser from "../actions/getCurrentUser";
-import EmailInput from "./components/EmailInput";
+import EmailForm from "./components/EmailForm";
 
 const Page = async () => {
   const user = await getCurrentUser();
@@ -20,7 +20,7 @@ const Page = async () => {
         <div className="align-left">
           <p className="text-2xl font-bold">Before you continue...</p>
           <p className="pb-4">Please provide an email address for your account</p>
-          <EmailInput />
+          <EmailForm />
         </div>
       )}
     </div>
