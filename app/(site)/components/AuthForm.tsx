@@ -34,9 +34,10 @@ const AuthForm = () => {
 
   useEffect(() => {
     if (session?.status == "authenticated") {
+      console.log(session.data.user?.name);
       router.push("/profile");
     }
-  }, [session?.status, router]);
+  }, [session?.status]);
 
   const toggleVariant = () => {
     if (variant == "LOGIN") {
