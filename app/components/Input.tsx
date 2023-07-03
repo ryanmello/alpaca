@@ -9,6 +9,7 @@ interface InputProps {
   required?: boolean;
   disabled?: boolean;
   errors?: FieldErrors;
+  placeholder?: string;
   register: UseFormRegister<FieldValues>;
 }
 
@@ -18,6 +19,7 @@ const Input: React.FC<InputProps> = ({
   type,
   required,
   disabled,
+  placeholder,
   register
 }) => {
   return (
@@ -31,6 +33,7 @@ const Input: React.FC<InputProps> = ({
           disabled={disabled}
           {...register(id, { required })}
           className="w-full py-2 px-4 rounded-lg ring-1 ring-inset ring-gray-300"
+          placeholder={placeholder}
         />
       </div>
     </div>
