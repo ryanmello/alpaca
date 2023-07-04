@@ -1,5 +1,6 @@
 import prisma from "@/app/libs/prismadb";
 import getSession from "./getSession";
+import getGitHubUser from "./getGithubUser";
 
 const getCurrentUser = async () => {
   try {
@@ -7,7 +8,13 @@ const getCurrentUser = async () => {
 
     // ensure that the current session has a valid user
     if (!session?.user?.email) {
-      return null;
+      const githubUser = await getGitHubUser();
+
+      if(!githubUser?.email){
+        return null;
+      }
+
+      return githubUser;
     }
 
     // find the user with the session user email
