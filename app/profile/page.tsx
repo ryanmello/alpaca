@@ -19,6 +19,17 @@ const Page = async () => {
           </div>
         </>
       ) : (
+        /* this portion of the application can be removed if the scope
+         * of your github token includes the user's email. 
+         *
+         * 1. Open developer settings on Github
+         * 2. Select your project and open the Permissions and events tab
+         * 3. Under Account permission, set email addresses to read-only
+         * 4. Save change
+         * 
+         * Now when a user logs in with Github, their email will be apart 
+         * of their user object in your mongodb database
+         */
         <div className="align-left">
           <p className="text-2xl font-bold">Before you continue...</p>
           <p className="pb-4">
