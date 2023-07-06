@@ -32,6 +32,7 @@ const AuthForm = () => {
     },
   });
 
+  // if there is a active session the user will be pushed to their profile
   useEffect(() => {
     if (session?.status == "authenticated") {
       console.log(session.data.user?.name);
@@ -39,6 +40,7 @@ const AuthForm = () => {
     }
   }, [session?.status]);
 
+  // toggles the variant between LOGIN and REGISTER
   const toggleVariant = () => {
     if (variant == "LOGIN") {
       setVariant("REGISTER");
@@ -50,6 +52,7 @@ const AuthForm = () => {
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
 
+    // register user
     if (variant == "REGISTER") {
       axios
         .post("/api/register", data)
@@ -62,6 +65,7 @@ const AuthForm = () => {
         .finally(() => setIsLoading(false));
     }
 
+    // login user
     if (variant == "LOGIN") {
       signIn("credentials", {
         ...data,
@@ -81,10 +85,10 @@ const AuthForm = () => {
     }
   };
 
+  // nextauth social sign in
   const socialAction = (action: string) => {
     setIsLoading(true);
 
-    // NextAuth social sign in
     signIn(action, { redirect: false })
       .then((callback) => {
         if (callback?.error) {
